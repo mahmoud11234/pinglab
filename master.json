@@ -1,0 +1,111 @@
+Lab Guide: How to Ping Two Windows Machines
+
+In this lab guide, we will go through a step-by-step process of pinging two Windows machines with the IP addresses 10.5.0.4 and 10.5.0.5. We will cover setting up the network, configuring firewalls, and using the ping command to test connectivity between the two machines.
+Prerequisites:
+
+    Two Windows machines with the following IP addresses:
+        Machine 1: 10.5.0.4
+        Machine 2: 10.5.0.5
+    Administrative access to both machines.
+    A basic understanding of networking and command-line interfaces.
+
+Step 1: Verify Network Configuration
+1.1: Check IP Address on Both Machines
+
+First, ensure both machines have the correct IP addresses assigned.
+
+    Open Command Prompt on both machines.
+        You can do this by pressing Windows + R, typing cmd, and pressing Enter.
+
+    Type the following command to check the IP address on both machines:
+    bash
+
+    ipconfig
+
+    Verify that the output matches the expected IP addresses:
+        Machine 1 should have 10.5.0.4 as its IP address.
+        Machine 2 should have 10.5.0.5 as its IP address.
+
+Example Output (on Machine 1):
+plaintext
+
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . :
+   IPv4 Address. . . . . . . . . . . : 10.5.0.4
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 10.5.0.1
+
+1.2: Verify Subnet Mask
+
+Ensure both machines are on the same subnet. The subnet mask should typically be 255.255.255.0, which allows communication between devices with IPs like 10.5.0.x.
+Step 2: Disable Firewalls Temporarily (Optional)
+
+Windows Firewall may block ICMP Echo Requests (ping). For this lab, we will temporarily disable the firewall to make sure it doesn’t interfere with our ping test.
+2.1: Disable Firewall via Windows Security
+
+    Open Windows Security:
+        Press Windows + S, type "Windows Security", and press Enter.
+
+    Navigate to Firewall & network protection.
+
+    Click on the active network (e.g., Private network).
+
+    Toggle Microsoft Defender Firewall to Off for both machines.
+
+    Note: Disabling the firewall is not recommended in a production environment. After the test, remember to re-enable it or configure firewall rules instead.
+
+Step 3: Allow Ping Through Windows Firewall (Preferred Method)
+
+Instead of disabling the firewall entirely, you can configure the firewall to specifically allow ICMP requests (ping).
+3.1: Allow ICMP Requests Through the Firewall
+
+    Open the Command Prompt as an Administrator:
+        Press Windows + S, type cmd, right-click on Command Prompt, and choose Run as Administrator.
+
+    Allow inbound ICMP Echo Requests by running the following command:
+    bash
+
+    netsh advfirewall firewall add rule name="Allow ICMPv4-In" protocol=icmpv4:8,any dir=in action=allow
+
+    Repeat the same step on both machines.
+
+Step 4: Test Network Connectivity
+
+Now that the machines are configured, we can test connectivity by using the ping command.
+4.1: Ping from Machine 1 (10.5.0.4) to Machine 2 (10.5.0.5)
+
+    On Machine 1 (10.5.0.4), open Command Prompt.
+
+    Type the following command to ping Machine 2:
+    bash
+
+ping 10.5.0.5
+
+You should see a response similar to this:
+plaintext
+
+    Pinging 10.5.0.5 with 32 bytes of data:
+    Reply from 10.5.0.5: bytes=32 time<1ms TTL=128
+    Reply from 10.5.0.5: bytes=32 time<1ms TTL=128
+    Reply from 10.5.0.5: bytes=32 time<1ms TTL=128
+    Reply from 10.5.0.5: bytes=32 time<1ms TTL=128
+
+    Ping statistics for 10.5.0.5:
+        Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+    Approximate round trip times in milli-seconds:
+        Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+    Success: If you receive replies without packet loss, the machines can communicate.
+    Failure: If you see "Request timed out" or "Destination host unreachable", proceed to the troubleshooting steps below.
+
+4.2: Ping from Machine 2 (10.5.0.5) to Machine 1 (10.5.0.4)
+
+    On Machine 2 (10.5.0.5), open Command Prompt.
+
+    Type the following command to ping Machine 1:
+    bash
+
+ping 10.5.0.4
+
+You should see a similar response as in the previous step. 
